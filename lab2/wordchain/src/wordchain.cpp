@@ -4,10 +4,16 @@
 #include <queue>
 #include <stack>
 #include <set>
-
+#include <tuple>
 using namespace std;
 
 const string ALPHABET  = "abcdefghijklmnopqrstuvwxyz";
+
+/**
+ * @brief getDictionary reads a dictionary from a text file.
+ * @param wordLength is the length of the word to be guessed.
+ * @return a set with all words of length wordLength.
+ */
 
 set <string> getDictionary(int wordLength) {
     ifstream input;
@@ -28,6 +34,15 @@ set <string> getDictionary(int wordLength) {
 
     return dict;
 }
+
+
+/**
+ * @brief wordChain uses an algorithm to determine the shortest transformation path
+ * between two given words in a dictionary.
+ * @param w1 is the first word.
+ * @param w2 is the seond word.
+ * @return the stack containing this shortest path.
+ */
 
 stack<string> wordChain(string w1,string w2) {
     set<string> dictionary = getDictionary(w1.length());
@@ -65,6 +80,11 @@ stack<string> wordChain(string w1,string w2) {
     return topStack;
 }
 
+/**
+ * @brief print prints the content of a stack.
+ * @param words is the stack to be printed.
+ */
+
 void print(stack<string> words) {
     while (!words.empty()) {
         cout << words.top();
@@ -76,16 +96,15 @@ void print(stack<string> words) {
     cout.flush();
 }
 
-int main() {
-    cout << "Welcome to TDDD86 Word Chain." << endl;
-    cout << "If you give me two English words, I will transform the" << endl;
-    cout << "first into the second by changing one letter at a time." << endl;
-    cout << endl;
+/**
+ * @brief getInput reads input from the terminal.
+ * @return the words input as a tuple of strings.
+ */
 
-    cout << "Please type two words: ";
-
+tuple<string, string> getInput() {
     string words;
     string w1, w2;
+
     bool firstWord = true;
     char letter;
     getline(cin, words);
@@ -101,8 +120,23 @@ int main() {
             firstWord = false;
         }
     }
+    return make_tuple(w1, w2);
+}
 
-    stack<string> wordStack = wordChain(w1, w2);
+/**
+ * @brief main is the main function calling all other functions when needed.
+ * @return successful run
+ */
+
+int main() {
+    cout << "Welcome to TDDD86 Word Chain." << endl;
+    cout << "If you give me two English words, I will transform the" << endl;
+    cout << "first into the second by changing one letter at a time." << endl;
+    cout << endl;
+
+    cout << "Please type two words: ";
+    tuple<string, string> words = getInput();
+    stack<string> wordStack = wordChain(get<0>(words), get<1>(words));
 
     print(wordStack);
     cout.flush();
