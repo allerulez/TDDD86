@@ -1,9 +1,3 @@
-// This is the .cpp file you will edit and turn in.
-// We have provided a skeleton for you,
-// but you must finish it as described in the spec.
-// Also remove these comments here and add your own.
-// TODO: remove this comment header
-
 #include <iostream>
 #include "Tour.h"
 #include "Node.h"
@@ -11,40 +5,126 @@
 
 Tour::Tour()
 {
-    // TODO: write this member
+
+    firstNode = NULL;
 }
 
 Tour::~Tour()
 {
-    // TODO: write this member
+
+    Node* next = firstNode;
+
+    while(next != NULL) {
+        Node* gone = next;
+        next = next->next;
+        delete gone;
+    }
 }
 
-void Tour::show()
+void const Tour::show()
 {
-    // TODO: write this member
+    bool firstLap = true;
+    Node *first = firstNode;
+    while(firstLap) {
+        first->point.toString();
+        first = first->next;
+        if (first == firstNode) {
+        firstLap = false;
+        }
+    }
 }
 
-void Tour::draw(QGraphicsScene *scene)
+void const Tour::draw(QGraphicsScene *scene)
 {
-    // TODO: write this member
+    bool firstLap = true;
+    Node *first = firstNode;
+    while(firstLap) {
+        first->point.drawTo(first->next->point, scene);
+        first = first->next;
+        if (first == firstNode) {
+        firstLap = false;
+        }
+    }
 }
 
-int Tour::size()
+int const Tour::size()
 {
-    // TODO: write this member
+    int tourSize = 0;
+    bool firstLap = true;
+    Node *first = firstNode;
+    while(firstLap) {
+        tourSize++;
+        first = first->next;
+        if (first == firstNode) {
+        firstLap = false;
+        }
+    }
+    return tourSize;
 }
 
-double Tour::distance()
+double const Tour::distance()
 {
-    // TODO: write this member
+    double tourDistance = 0.0;
+    bool firstLap = true;
+    Node *first = firstNode;
+    while(firstLap) {
+        tourDistance += first->point.distanceTo(first->next->point);
+        first = first->next;
+        if (first == firstNode) {
+        firstLap = false;
+        }
+    }
+    return tourDistance;
 }
 
 void Tour::insertNearest(Point p)
 {
-    // TODO: write this member
+
+    if(firstNode == NULL) {
+        firstNode = new Node(p, NULL);
+        firstNode->next = firstNode;
+    } else {
+        bool firstLap = true;
+        Node* nearest = firstNode;
+        Node* first = firstNode;
+        double distanceToP = first->point.distanceTo(p);
+        while(firstLap) {
+            double temp = first->point.distanceTo(p);
+            if(temp < distanceToP) {
+                distanceToP = temp;
+                nearest = first;
+            }
+            first = first->next;
+            if (first == firstNode) {
+                firstLap = false;
+            }
+        }
+        Node* newNode = new Node(p, nearest->next);
+        nearest->next = newNode;
+    }
 }
 
 void Tour::insertSmallest(Point p)
 {
-    // TODO: write this member
+    if(firstNode == NULL) {
+        firstNode = new Node(p, NULL);
+        firstNode->next = firstNode;
+    }
+    bool firstLap = true;
+    Node* nearest = firstNode;
+    Node* first = firstNode;
+    double distanceBetween = (first->point.distanceTo(p) + first->next->point.distanceTo(p)) - (first->point.distanceTo(first->next->point));
+    while(firstLap) {
+        double temp = (first->point.distanceTo(p) + first->next->point.distanceTo(p)) - (first->point.distanceTo(first->next->point));
+        if(temp < distanceBetween) {
+            distanceBetween = temp;
+            nearest = first;
+        }
+        first = first->next;
+        if (first == firstNode) {
+        firstLap = false;
+        }
+    }
+    Node* newNode = new Node (p, nearest->next);
+    nearest->next = newNode;
 }

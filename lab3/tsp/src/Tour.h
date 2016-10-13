@@ -1,8 +1,4 @@
-// This is the .h file you will edit and turn in.
-// We have provided a skeleton for you,
-// but you must finish it as described in the spec.
-// Also remove these comments here and add your own, as well as on the members.
-// TODO: remove this comment header
+
 
 #ifndef TOUR_H
 #define TOUR_H
@@ -12,18 +8,25 @@
 
 class Tour {
 public:
-
+    // Constructor
     Tour();
+    // Destructor
     ~Tour();
-    void show();
-    void draw(QGraphicsScene* scene);
-    int size();
-    double distance();
+    // Prints all points in the linked list
+    void const show();
+    // Displays the path
+    void const draw(QGraphicsScene* scene);
+    // Returns the amount of elements in the linked list
+    int const size();
+    // Returns the Euklidian distance of the path
+    double const distance();
+    // Inserts a new Node using a nearest neighbour algorithm
     void insertNearest(Point p);
+    // Inserts a new Node using a smallest increase algorithm
     void insertSmallest(Point p);
 
 private:
-
+    Node* firstNode;
 };
 
 #endif // TOUR_H

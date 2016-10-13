@@ -1,54 +1,69 @@
-// This is the .cpp file you will edit and turn in.
-// We have provided a skeleton for you,
-// but you must finish it as described in the spec.
-// Also remove these comments here and add your own.
-// TODO: remove this comment header
-
 #include "TileList.h"
 
 
 TileList::TileList()
 {
-    // TODO: write this member
-    vector<Tile>
+    vector<Tile> *tileVector =  new vector<Tile> (10);
 }
 
 TileList::~TileList()
 {
-    // TODO: write this member
+    delete [] &tileVector;
 }
 
 void TileList::addTile(Tile tile)
 {
-    // TODO: write this member
+    tileVector.insert(tileVector.end(), tile);
 }
 
-void TileList::drawAll(QGraphicsScene* scene)
+void const TileList::drawAll(QGraphicsScene* scene)
 {
-    // TODO: write this member
+    for (Tile t: tileVector) {
+        t.draw(scene);
+    }
 }
 
-int TileList::indexOfTopTile(int x, int y)
+int const TileList::indexOfTopTile(int x, int y)
 {
-    // TODO: write this member
+    for (int i = tileVector.size()-1; i >= 0; i--) {
+        if(tileVector[i].contains(x, y)) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void TileList::raise(int x, int y)
 {
-    // TODO: write this member
+    int tileInd = indexOfTopTile(x, y);
+    if ( tileInd != -1) {
+        Tile t= tileVector[tileInd];
+        tileVector.push_back(t);
+        tileVector.erase(tileVector.begin() + tileInd);
+    }
 }
 
 void TileList::lower(int x, int y)
 {
-    // TODO: write this member
+    int tileInd = indexOfTopTile(x, y);
+    if ( tileInd != -1) {
+        Tile t= tileVector[tileInd];
+        tileVector.erase(tileVector.begin() + tileInd);
+        tileVector.insert(tileVector.begin(), t);
+    }
 }
 
 void TileList::remove(int x, int y)
 {
-    // TODO: write this member
+    int tileInd = indexOfTopTile(x, y);
+    if ( tileInd != -1) {
+        tileVector.erase(tileVector.begin() + tileInd);
+    }
 }
 
 void TileList::removeAll(int x, int y)
 {
-    // TODO: write this member
+    while(indexOfTopTile(x,y) != -1) {
+        remove(x,y);
+    }
 }
