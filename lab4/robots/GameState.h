@@ -22,7 +22,8 @@ public:
     GameState();
     GameState(const GameState&);
     ~GameState();
-    GameState& operator= (const GameState& gameState);
+    GameState& operator= (const GameState&);
+
     GameState(int numberOfRobots);
 
     /*

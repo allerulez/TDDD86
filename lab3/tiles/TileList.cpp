@@ -1,19 +1,38 @@
 #include "TileList.h"
 
-
 TileList::TileList()
 {
-    vector<Tile> *tileVector =  new vector<Tile> (10);
+    size = 10;
+    Tile* tileArray[size];
+    curPos=0;
 }
 
 TileList::~TileList()
 {
-    delete [] &tileVector;
+    delete [] &tileArray;
 }
 
 void TileList::addTile(Tile tile)
 {
-    tileVector.insert(tileVector.end(), tile);
+    if (curPos < size) {
+        tileArray[curPos] = tile;
+    } else {
+        increaseArraySize();
+        tileArray[curPos] = tile;
+    }
+    curPos++;
+
+}
+
+void TileList::increaseArraySize () {
+    size*=2;
+    Tile newArr[size];
+    for (int i=0; i< size/2; i++) {
+        newArr[i]= tileArray[i];
+    }
+
+    delete [] tileArray;
+    tileArray = newArr;
 }
 
 void const TileList::drawAll(QGraphicsScene* scene)

@@ -6,12 +6,18 @@
 #include "GameState.h"
 #include "utilities.h"
 #include "constants.h"
+#include "vector"
 
 GameState::GameState(){}
 
 GameState::GameState (const GameState& state) {
-    ptr = new vector<Robot*>;
-    *ptr = state.
+    for (Robot* r: robots) {
+        delete &r;
+    }
+    for (Robot* r: state.robots) {
+        robots.push_back(r);
+    }
+
 }
 
 GameState::~GameState() {
@@ -20,8 +26,9 @@ GameState::~GameState() {
     }
 }
 
-GameState::operator =(GameState& gameState) {
-
+  GameState& GameState::operator =(const GameState& state) {
+    robots = state.robots;
+    return *this;
 }
 
 GameState::GameState(int numberOfRobots) {

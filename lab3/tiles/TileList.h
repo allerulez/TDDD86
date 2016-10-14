@@ -5,7 +5,8 @@
 
 #include <QGraphicsScene>
 #include "Tile.h"
-#include <vector>
+#include <array>
+
 
 class TileList {
 public:
@@ -15,6 +16,8 @@ public:
     ~TileList();
     // Add a tile to the end of the vector
     void addTile(Tile tile);
+    // Increase the size of an array
+    void increaseArraySize ();
     // Draw all tiles in the vector to the scene
     void const drawAll(QGraphicsScene* scene);
     // Return the index of the top tile that "covers" (x, y)
@@ -30,7 +33,9 @@ public:
 
 private:
     // Contains all tiles
-    vector<Tile> tileVector;
+    Tile tileArray[];
+    int size;
+    int curPos;
 
 
 
