@@ -3,7 +3,7 @@
 TileList::TileList()
 {
     size = 10;
-    Tile* tileArray[size];
+    tileArray = new Tile[size];
     curPos=0;
 }
 
@@ -26,26 +26,26 @@ void TileList::addTile(Tile tile)
 
 void TileList::increaseArraySize () {
     size*=2;
-    Tile newArr[size];
+    Tile* newArr = new Tile[size];
     for (int i=0; i< size/2; i++) {
         newArr[i]= tileArray[i];
     }
 
-    delete [] tileArray;
+    delete tileArray;
     tileArray = newArr;
 }
 
 void const TileList::drawAll(QGraphicsScene* scene)
 {
-    for (Tile t: tileVector) {
-        t.draw(scene);
+    for ( int i = 0; i < size-1; i++) {
+        tileArray[i].draw(scene);
     }
 }
 
 int const TileList::indexOfTopTile(int x, int y)
 {
-    for (int i = tileVector.size()-1; i >= 0; i--) {
-        if(tileVector[i].contains(x, y)) {
+    for (int i = size-1; i >= 0; i--) {
+        if(tileArray[i].contains(x, y)) {
             return i;
         }
     }
@@ -56,9 +56,11 @@ void TileList::raise(int x, int y)
 {
     int tileInd = indexOfTopTile(x, y);
     if ( tileInd != -1) {
-        Tile t= tileVector[tileInd];
-        tileVector.push_back(t);
-        tileVector.erase(tileVector.begin() + tileInd);
+        Tile t= tileArray[tileInd];
+        for (int i = tileInd; i < curPos; i++) {
+            tileArray[i] = tileArray[i+1];
+        }
+        tileArray[curPos] = t;
     }
 }
 
@@ -66,9 +68,11 @@ void TileList::lower(int x, int y)
 {
     int tileInd = indexOfTopTile(x, y);
     if ( tileInd != -1) {
-        Tile t= tileVector[tileInd];
-        tileVector.erase(tileVector.begin() + tileInd);
-        tileVector.insert(tileVector.begin(), t);
+        Tile t= tileArray[tileInd];
+        for (int i = tileInd; i > 0;i--) {
+            tileArray[i] = tileArray[i-1];
+        }
+        tileArray[0] = t;
     }
 }
 
@@ -76,7 +80,11 @@ void TileList::remove(int x, int y)
 {
     int tileInd = indexOfTopTile(x, y);
     if ( tileInd != -1) {
-        tileVector.erase(tileVector.begin() + tileInd);
+        for(int i = tileInd; i<curPos; i++){
+            tileArray[i] = tileArray[i+1];
+        }
+        //delete &tileArray[curPos];
+        curPos--;
     }
 }
 

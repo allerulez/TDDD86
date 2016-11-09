@@ -1,4 +1,4 @@
-// A header to define all the required functions of a TileList class.
+    // A header to define all the required functions of a TileList class.
 
 #ifndef TILELIST_H
 #define TILELIST_H
@@ -18,6 +18,8 @@ public:
     void addTile(Tile tile);
     // Increase the size of an array
     void increaseArraySize ();
+    //Erase an index
+    void erase(int tileInd);
     // Draw all tiles in the vector to the scene
     void const drawAll(QGraphicsScene* scene);
     // Return the index of the top tile that "covers" (x, y)
@@ -33,7 +35,7 @@ public:
 
 private:
     // Contains all tiles
-    Tile tileArray[];
+    Tile* tileArray;
     int size;
     int curPos;
 

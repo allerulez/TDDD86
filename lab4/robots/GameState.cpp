@@ -11,9 +11,7 @@
 GameState::GameState(){}
 
 GameState::GameState (const GameState& state) {
-    for (Robot* r: robots) {
-        delete &r;
-    }
+
     for (Robot* r: state.robots) {
         robots.push_back(r);
     }
@@ -22,13 +20,17 @@ GameState::GameState (const GameState& state) {
 
 GameState::~GameState() {
     for (Robot* r: robots) {
-        delete &r;
+        delete r;
     }
 }
 
   GameState& GameState::operator =(const GameState& state) {
     robots = state.robots;
     return *this;
+    /*
+     *Copy the elements.
+     * NOT LIKE ABOVE
+     */
 }
 
 GameState::GameState(int numberOfRobots) {
@@ -64,9 +66,7 @@ int GameState::countCollisions() {
     while (i < robots.size()) {
         bool collision = (countRobotsAt (*robots[i]) > 1);
         if (collision) {
-            robots.push_back (new Junk(*robots[i]));
-            robots[i] = robots[robots.size()-1];
-            delete robots[robots.size()-1];
+            robots[i] = new Junk(*robots[i]);
             numberDestroyed++;
 
         }

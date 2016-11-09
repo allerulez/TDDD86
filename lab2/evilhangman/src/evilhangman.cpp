@@ -57,16 +57,10 @@ string createKey(const string curWord, const string dictWord, const char letter)
  * @param keyList Vector of all Keys in wordMap.
  * @param letter The guessed letter.
  */
-void wordClassSort (vector<string> const dict, map<string, vector<string>> &wordMap, string const curWord, char const letter) {
+void wordClassSort (vector<string> const &dict, map<string, vector<string>> &wordMap, string const &curWord, char const letter) {
     for (string w: dict) {
         string key = createKey(curWord, w, letter);
-        try {
             wordMap[key].insert(wordMap[key].end(), w);
-        } catch (int e){
-            vector<string> emptyList;
-            wordMap.insert(pair<string, vector<string>>(key, emptyList));
-            wordMap[key].insert(wordMap[key].end(), w);
-        }
     }
 }
 /**
