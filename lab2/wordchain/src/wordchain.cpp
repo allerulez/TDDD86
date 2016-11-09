@@ -19,22 +19,54 @@ set <string> getDictionary(int wordLength) {
     ifstream input;
     input.open("dictionary.txt");
     string line;
-    string tempWord = "";
-    bool empty=false;
     set<string> dict;
-    while (!empty) {
-        getline(input, line);
-        if (line.length() == 0 || tempWord == line) {
-            empty = true;
-        } else if (line.length() == wordLength){
-            dict.insert(line);
-        }
-        tempWord = line;
+    while (input >> line) {
+        dict.insert(line);
     }
-
     return dict;
 }
 
+
+/**
+ * @brief print prints the content of a stack.
+ * @param words is the stack to be printed.
+ */
+
+void print(stack<string> &words) {
+    while (!words.empty()) {
+        cout << words.top();
+        words.pop();
+        if (!words.empty()) {
+            cout << "-->";
+        }
+    }
+    cout << endl;
+}
+
+/**
+ * @brief generateChain adds a stack of strings to queue for every viable neighbour word english word
+ * @param w1 bottom word in stack
+ * @param topStack stack which will be copied and words will be added
+ * @param seenWords a set of strings with words already been added
+ * @param dictionary is a set of all english words
+ * @param wordQueue is where the stacks will be added
+ */
+void generateChain (const string &w1, const stack<string> &topStack, set<string> &seenWords, const set<string> &dictionary, queue<stack<string>> &wordQueue) {
+    for (int i = 0; i < w1.length(); i++) {
+        for (int j = 0; j < ALPHABET.length(); j++){
+            string tempWord = topStack.top();
+            tempWord[i] = ALPHABET[j];
+            if(dictionary.find(tempWord) != dictionary.end()){
+               if (seenWords.find(tempWord) == seenWords.end()) {
+                   seenWords.insert(tempWord);
+                   stack<string> newStack = topStack;
+                   newStack.push(tempWord);
+                   wordQueue.push(newStack);
+               }
+            }
+        }
+    }
+}
 
 /**
  * @brief wordChain uses an algorithm to determine the shortest transformation path
@@ -57,44 +89,15 @@ stack<string> wordChain(string w1,string w2) {
         topStack = wordQueue.front();
         wordQueue.pop();
         if(topStack.top() == w2) {
-
             return topStack;
         } else {
-            for (int i = 0; i < w1.length(); i++) {
-                for (int j = 0; j < ALPHABET.length(); j++){
-                    string tempWord = topStack.top();
-                    tempWord[i] = ALPHABET[j];
-                    if(dictionary.find(tempWord) != dictionary.end()){
-                       if (seenWords.find(tempWord) == seenWords.end()) {
-                           seenWords.insert(tempWord);
-                           stack<string> newStack = topStack;
-                           newStack.push(tempWord);
-                           wordQueue.push(newStack);
-                       }
-                    }        
-                }
-            }
+            generateChain(w1, topStack, seenWords, dictionary, wordQueue);
 
         }
     }
     return topStack;
 }
 
-/**
- * @brief print prints the content of a stack.
- * @param words is the stack to be printed.
- */
-
-void print(stack<string> words) {
-    while (!words.empty()) {
-        cout << words.top();
-        words.pop();
-        if (!words.empty()) {
-            cout << "-->";
-        }
-    }
-    cout.flush();
-}
 
 /**
  * @brief getInput reads input from the terminal.
@@ -102,24 +105,8 @@ void print(stack<string> words) {
  */
 
 tuple<string, string> getInput() {
-    string words;
     string w1, w2;
-
-    bool firstWord = true;
-    char letter;
-    getline(cin, words);
-    for (int i = 0; i < words.length(); i++) {
-        letter = words[i];
-        if (letter != ' ') {
-            if (firstWord) {
-                w1 += letter; //.append(letter);
-            } else {
-                w2 += letter; //.append(letter);
-            }
-        } else {
-            firstWord = false;
-        }
-    }
+    cin >> w1 >> w2;
     return make_tuple(w1, w2);
 }
 
