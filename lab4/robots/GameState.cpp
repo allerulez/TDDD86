@@ -25,12 +25,12 @@ GameState::~GameState() {
 }
 
   GameState& GameState::operator =(const GameState& state) {
-    robots = state.robots;
+      robots.clear();
+    for (Robot* r: state.robots) {
+        Robot *bot = new Robot(*r);
+        robots.push_back(bot);
+    }
     return *this;
-    /*
-     *Copy the elements.
-     * NOT LIKE ABOVE
-     */
 }
 
 GameState::GameState(int numberOfRobots) {
