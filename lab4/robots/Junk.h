@@ -20,7 +20,7 @@ public:
     void draw(QGraphicsScene* scene) const;
     void moveTowards(const Unit &u);
     bool attacks(const Unit &u) const;
-    bool isJunk();
+    bool isJunk() override;
 };
 
 #endif // JUNK_H

@@ -19,11 +19,14 @@
 
 class GameState {
 public:
-    GameState();
+    //Constructor
+    //GameState();
+    //copy Constructor
     GameState(const GameState&);
+    // Destructor
     ~GameState();
     GameState& operator= (const GameState&);
-
+    //constructor
     GameState(int numberOfRobots);
 
     /*

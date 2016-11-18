@@ -8,12 +8,12 @@
 #include "constants.h"
 #include "vector"
 
-GameState::GameState(){}
 
 GameState::GameState (const GameState& state) {
 
     for (Robot* r: state.robots) {
-        robots.push_back(r);
+        Robot *bot = new Robot(*r);
+        robots.push_back(bot);
     }
 
 }
@@ -34,10 +34,21 @@ GameState::~GameState() {
 }
 
 GameState::GameState(int numberOfRobots) {
+    bool looping = true;
     for (int i = 0; i < numberOfRobots; i++) {
         Robot *robot;
-        do {robot = new Robot();}
-        while (!isEmpty (*robot));
+        looping = true;
+        while (looping) {
+            robot = new Robot();
+            if (isEmpty(*robot)) {
+                looping = false;
+            } else {
+              delete robot;
+            }
+        }
+/*        do {
+            robot = new Robot();
+        } while (!isEmpty (*robot));  */
         robots.push_back(robot);
     }
     teleportHero();

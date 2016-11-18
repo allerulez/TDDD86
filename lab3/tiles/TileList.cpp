@@ -9,7 +9,7 @@ TileList::TileList()
 
 TileList::~TileList()
 {
-    delete [] &tileArray;
+    delete [] tileArray;
 }
 
 void TileList::addTile(Tile tile)

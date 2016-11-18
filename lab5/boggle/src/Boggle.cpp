@@ -19,4 +19,55 @@ static string CUBES[NUM_CUBES] = {        // the letters on all 6 sides of every
    "EIOSST", "ELRTTY", "HIMNQU", "HLNNRZ"
 };
 
-// TODO: implement the members you declared in Boggle.h
+char Boggle::rollDie(string die) {
+    int charNr = rand() % 6;
+    return die[charNr];
+}
+
+Boggle::Boggle() {
+
+}
+
+
+Boggle::~Boggle() {
+
+}
+
+bool Boggle::isWord(string word) {
+    return lex.contains(word);
+}
+
+bool Boggle::isReqLength(string word) {
+    return(word.length()>=4);
+}
+
+string Boggle::curBoard() {
+    string boardStr="";
+    for (int i = 0; i<BOARD_SIZE; i++) {
+        for (int j = 0; j<BOARD_SIZE; j++) {
+            boardStr+= '[' + board[i][j] + "] ";
+        }
+        boardStr+="\n";
+    }
+
+    return boardStr;
+}
+
+void Boggle::resetMan(string dice) {
+    for (int i = 0; i<BOARD_SIZE; i++) {
+        for (int j = 0; j<BOARD_SIZE; j++) {
+            board[i][j] = dice[4*i + j];
+        }
+    }
+}
+
+void Boggle::resetRand() {
+    for (int i = 0; i<BOARD_SIZE; i++) {
+        for (int j = 0; j<BOARD_SIZE; j++) {
+            string temp = CUBES[4*i + j];
+            board[i][j] = rollDie(temp);
+        }
+    }
+    shuffle(board);
+}
+

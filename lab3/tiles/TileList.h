@@ -36,7 +36,9 @@ public:
 private:
     // Contains all tiles
     Tile* tileArray;
+    // The current size of the tileArray
     int size;
+    // The current amount of tiles
     int curPos;
 
 
