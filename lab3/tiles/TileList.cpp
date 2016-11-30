@@ -14,12 +14,10 @@ TileList::~TileList()
 
 void TileList::addTile(Tile tile)
 {
-    if (curPos < size) {
-        tileArray[curPos] = tile;
-    } else {
+    if(curPos == size) {
         increaseArraySize();
-        tileArray[curPos] = tile;
     }
+    tileArray[curPos] = tile;
     curPos++;
 
 }
@@ -27,8 +25,8 @@ void TileList::addTile(Tile tile)
 void TileList::increaseArraySize () {
     size*=2;
     Tile* newArr = new Tile[size];
-    for (int i=0; i< size/2; i++) {
-        newArr[i]= tileArray[i];
+    for (int i = 0; i < size/2; i++) {
+        newArr[i] = tileArray[i];
     }
 
     delete tileArray;
@@ -83,7 +81,6 @@ void TileList::remove(int x, int y)
         for(int i = tileInd; i<curPos; i++){
             tileArray[i] = tileArray[i+1];
         }
-        //delete &tileArray[curPos];
         curPos--;
     }
 }

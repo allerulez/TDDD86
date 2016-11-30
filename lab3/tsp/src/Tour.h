@@ -1,4 +1,4 @@
-
+// TDDD86 aleev379 robka246
 
 #ifndef TOUR_H
 #define TOUR_H
@@ -21,9 +21,9 @@ public:
     // Returns the Euklidian distance of the path
     double const distance();
     // Inserts a new Node using a nearest neighbour algorithm
-    void insertNearest(Point p);
+    void insertNearest(const Point &p);
     // Inserts a new Node using a smallest increase algorithm
-    void insertSmallest(Point p);
+    void insertSmallest(const Point &p);
 
 private:
     Node* firstNode;

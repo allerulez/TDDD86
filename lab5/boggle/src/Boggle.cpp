@@ -45,23 +45,84 @@ string Boggle::curBoard() {
     string boardStr="";
     for (int i = 0; i<BOARD_SIZE; i++) {
         for (int j = 0; j<BOARD_SIZE; j++) {
-            boardStr+= '[' + board[i][j] + "] ";
+            boardStr.append( "[");
+            boardStr.push_back(board[i][j]);
+            boardStr+= "] ";
         }
         boardStr+="\n";
     }
 
     return boardStr;
 }
+Grid<bool> Boggle::falseGrid() {
+    Grid<bool> usedLetterBoard = Grid<bool>(BOARD_SIZE, BOARD_SIZE);
+    for (int i = 0; i<BOARD_SIZE; i++) {
+        for (int j = 0; j<BOARD_SIZE; j++) {
+            usedLetterBoard[i][j] = false;
+
+        }
+    }
+    return usedLetterBoard;
+}
+
+unordered_set<string> Boggle::searchWords(Grid<bool> usedLetter, const int x, const int y, string curWord) {
+    unordered_set<string> retSet;
+    for (int i = x-1; i <= x+1; i++) {
+        for (int j = y-1; j <= y+1; j++) {
+            if(i>= 0 && i <BOARD_SIZE && j>= 0 && j <BOARD_SIZE) {
+                if (!usedLetter[i][j]) {
+                    if (lex.containsPrefix(curWord+board[i][j])) {
+                        usedLetter[i][j] = true;
+                        unordered_set<string> tempSet = searchWords(usedLetter, i, j, curWord+board[i][j]);
+                        retSet.insert(tempSet.begin(), tempSet.end());
+                        usedLetter[i][j] = false;
+
+                    }
+                }
+            }
+        }
+    }
+    if(lex.contains(curWord) && curWord.length()>=4) {
+        retSet.insert(curWord);
+        compScore+= (curWord.length()-3);
+    }
+    return retSet;
+}
+
+void Boggle::findAllWords() {
+    for (int i = 0; i<BOARD_SIZE; i++) {
+        for (int j = 0; j<BOARD_SIZE; j++) {
+            Grid<bool> usedLetter = falseGrid();
+            usedLetter[i][j] = true;
+            string tempStr;
+            tempStr.push_back(board[i][j]);
+            unordered_set<string> temp = searchWords(usedLetter, i, j, tempStr);
+            possibleWords.insert(temp.begin(), temp.end());
+            usedLetter[i][j] = false;
+        }
+    }
+}
+
+void Boggle::resetStats() {
+    playerScore = 0;
+    compScore = 0;
+    playerWords.clear();
+    possibleWords.clear();
+}
 
 void Boggle::resetMan(string dice) {
+    resetStats();
     for (int i = 0; i<BOARD_SIZE; i++) {
         for (int j = 0; j<BOARD_SIZE; j++) {
             board[i][j] = dice[4*i + j];
         }
     }
+    cout<<"asdads"<<endl;
+    findAllWords();
 }
 
 void Boggle::resetRand() {
+    resetStats();
     for (int i = 0; i<BOARD_SIZE; i++) {
         for (int j = 0; j<BOARD_SIZE; j++) {
             string temp = CUBES[4*i + j];
@@ -69,5 +130,28 @@ void Boggle::resetRand() {
         }
     }
     shuffle(board);
+    cout<<"asdads"<<endl;
+    findAllWords();
 }
+
+bool Boggle::tryAddPlayerWord(string word) {
+    if(possibleWords.find(word) != possibleWords.end()) {
+        possibleWords.erase(word);
+        playerWords.push_back(word);
+        playerScore += (word.length()-3);
+        compScore -= (word.length()-3);
+        return true;
+    }
+    return false;
+}
+
+string Boggle::printSet() {
+    string retStr = "{ ";
+    for(const auto& w: possibleWords) {
+        retStr.append("'" + w + "', ");
+    }
+    retStr.append("}");
+    return retStr;
+}
+
 

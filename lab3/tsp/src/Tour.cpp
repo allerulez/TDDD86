@@ -6,43 +6,45 @@
 Tour::Tour()
 {
 
-    firstNode = NULL;
+    firstNode = nullptr;
 }
 
 Tour::~Tour()
 {
 
-    Node* next = firstNode;
-
-    while(next != NULL) {
+    Node* next = firstNode->next;
+    while(true) {
         Node* gone = next;
         next = next->next;
+        if (gone==firstNode) {
+            break;
+        }
         delete gone;
+
     }
 }
 
 void const Tour::show()
 {
-    bool firstLap = true;
+    bool shouldLoop = true;
     Node *first = firstNode;
-    while(firstLap) {
-        first->point.toString();
+    while(shouldLoop) {
         first = first->next;
         if (first == firstNode) {
-        firstLap = false;
+            shouldLoop = false;
         }
     }
 }
 
 void const Tour::draw(QGraphicsScene *scene)
 {
-    bool firstLap = true;
+    bool shouldLoop = true;
     Node *first = firstNode;
-    while(firstLap) {
+    while(shouldLoop) {
         first->point.drawTo(first->next->point, scene);
         first = first->next;
         if (first == firstNode) {
-        firstLap = false;
+            shouldLoop = false;
         }
     }
 }
@@ -65,30 +67,30 @@ int const Tour::size()
 double const Tour::distance()
 {
     double tourDistance = 0.0;
-    bool firstLap = true;
+    bool shouldLoop = true;
     Node *first = firstNode;
-    while(firstLap) {
+    while(shouldLoop) {
         tourDistance += first->point.distanceTo(first->next->point);
         first = first->next;
         if (first == firstNode) {
-        firstLap = false;
+            shouldLoop = false;
         }
     }
     return tourDistance;
 }
 
-void Tour::insertNearest(Point p)
+void Tour::insertNearest(const Point &p)
 {
 
-    if(firstNode == NULL) {
-        firstNode = new Node(p, NULL);
+    if(firstNode == nullptr) {
+        firstNode = new Node(p, nullptr);
         firstNode->next = firstNode;
     } else {
-        bool firstLap = true;
+        bool shouldLoop = true;
         Node* nearest = firstNode;
         Node* first = firstNode;
         double distanceToP = first->point.distanceTo(p);
-        while(firstLap) {
+        while(shouldLoop) {
             double temp = first->point.distanceTo(p);
             if(temp < distanceToP) {
                 distanceToP = temp;
@@ -96,7 +98,7 @@ void Tour::insertNearest(Point p)
             }
             first = first->next;
             if (first == firstNode) {
-                firstLap = false;
+                shouldLoop = false;
             }
         }
         Node* newNode = new Node(p, nearest->next);
@@ -104,18 +106,22 @@ void Tour::insertNearest(Point p)
     }
 }
 
-void Tour::insertSmallest(Point p)
+void Tour::insertSmallest(const Point &p)
 {
-    if(firstNode == NULL) {
-        firstNode = new Node(p, NULL);
+    if(firstNode == nullptr) {
+        firstNode = new Node(p, nullptr);
         firstNode->next = firstNode;
     }
     bool firstLap = true;
     Node* nearest = firstNode;
     Node* first = firstNode;
-    double distanceBetween = (first->point.distanceTo(p) + first->next->point.distanceTo(p)) - (first->point.distanceTo(first->next->point));
+    double distanceBetween = (first->point.distanceTo(p)
+                              + first->next->point.distanceTo(p))
+            - (first->point.distanceTo(first->next->point));
     while(firstLap) {
-        double temp = (first->point.distanceTo(p) + first->next->point.distanceTo(p)) - (first->point.distanceTo(first->next->point));
+        double temp = (first->point.distanceTo(p)
+                       + first->next->point.distanceTo(p))
+                - (first->point.distanceTo(first->next->point));
         if(temp < distanceBetween) {
             distanceBetween = temp;
             nearest = first;
