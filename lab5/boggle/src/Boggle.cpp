@@ -1,8 +1,3 @@
-// This is the .cpp file you will edit and turn in.
-// We have provided a minimal skeleton for you,
-// but you must finish it as described in the spec.
-// Also remove these comments here and add your own.
-// TODO: remove this comment header and replace it with your own
 
 #include <sstream>
 #include "Boggle.h"
@@ -19,7 +14,7 @@ static string CUBES[NUM_CUBES] = {        // the letters on all 6 sides of every
    "EIOSST", "ELRTTY", "HIMNQU", "HLNNRZ"
 };
 
-char Boggle::rollDie(string die) {
+char Boggle::rollDie(const string &die) {
     int charNr = rand() % 6;
     return die[charNr];
 }
@@ -33,11 +28,11 @@ Boggle::~Boggle() {
 
 }
 
-bool Boggle::isWord(string word) {
+bool Boggle::isWord(const string &word) {
     return lex.contains(word);
 }
 
-bool Boggle::isReqLength(string word) {
+bool Boggle::isReqLength(const string &word) {
     return(word.length()>=4);
 }
 
@@ -65,7 +60,7 @@ Grid<bool> Boggle::falseGrid() {
     return usedLetterBoard;
 }
 
-unordered_set<string> Boggle::searchWords(Grid<bool> usedLetter, const int x, const int y, string curWord) {
+unordered_set<string> Boggle::searchWords(Grid<bool> &usedLetter, const int x, const int y, string curWord) {
     unordered_set<string> retSet;
     for (int i = x-1; i <= x+1; i++) {
         for (int j = y-1; j <= y+1; j++) {
@@ -110,14 +105,13 @@ void Boggle::resetStats() {
     possibleWords.clear();
 }
 
-void Boggle::resetMan(string dice) {
+void Boggle::resetMan(const string &dice) {
     resetStats();
     for (int i = 0; i<BOARD_SIZE; i++) {
         for (int j = 0; j<BOARD_SIZE; j++) {
             board[i][j] = dice[4*i + j];
         }
     }
-    cout<<"asdads"<<endl;
     findAllWords();
 }
 
@@ -130,11 +124,10 @@ void Boggle::resetRand() {
         }
     }
     shuffle(board);
-    cout<<"asdads"<<endl;
     findAllWords();
 }
 
-bool Boggle::tryAddPlayerWord(string word) {
+bool Boggle::tryAddPlayerWord(const string &word) {
     if(possibleWords.find(word) != possibleWords.end()) {
         possibleWords.erase(word);
         playerWords.push_back(word);
