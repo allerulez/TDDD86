@@ -1,3 +1,5 @@
+// TDDD86 aleev379 robka246
+
 #include "queue"
 #include "encoding.h"
 #include <bitset>
@@ -29,7 +31,7 @@ HuffmanNode* buildEncodingTree(const map<int, int> &freqTable) {
         }
         HuffmanNode* secondLeaf = prioQ.top();
         prioQ.pop();
-        HuffmanNode* node = new HuffmanNode(257, firstLeaf->count + secondLeaf->count, firstLeaf, secondLeaf);
+        HuffmanNode* node = new HuffmanNode(256, firstLeaf->count + secondLeaf->count, firstLeaf, secondLeaf);
         prioQ.push(node);
     }
 }
@@ -50,7 +52,7 @@ map<int, string> buildEncodingMap(HuffmanNode* encodingTree) {
             pair<HuffmanNode*, string> newPair =
                     pair<HuffmanNode*, string>(aPair.first->one, aPair.second + "1");
             theQueue.push(newPair);
-        } else if(aPair.first->zero == nullptr) {
+        } else if(aPair.first->isLeaf()) {
             pair<int, string> newPair =
                     pair<int, string>(aPair.first->character, aPair.second);
             encodingMap.insert(newPair);
@@ -107,7 +109,6 @@ void compress(istream& input, obitstream& output) {
         for(char c: to_string(aPair.second)) mapString += c;
         mapString += ',';
         mapString += ' ';
-        cout << aPair.first << ':' << aPair.second << ", " << endl;
     }
     mapString.pop_back();
     mapString.pop_back();
@@ -119,55 +120,52 @@ void compress(istream& input, obitstream& output) {
 
     input.seekg(0, input.beg);
     encodeData(input, encMap, output);
+    freeTree(tree);
 }
 
 void decompress(ibitstream& input, ostream& output) {
     string chars = "";
-    bitset<8> bitVal;
+    char c;
     do {
-        for (int i = 8; i>0; i--) {
-            bitVal[i] = input.readBit();
-        }
-        chars += char(bitVal.to_ulong());
-    }while ( chars.back() != '}');
-    cout << chars << endl;
-
-
-/*    int c=0;
-    string charString = "";
-     do {
-        c = input.readBit();
-        charString += c;
-    }while(c!=int('}'));
-
-
-    string first;
-    string second;
-    int key;
+        input.get(c);
+        chars += c;
+    }while (c != '}');
     bool beforeCol = true;
-    map<int, int> aMap;
-    for (char ch: charString) {
-        if(ch == '}') break;
-        else if(ch == ',') {
-            key = stoi(first);
-            aMap[key] = stoi(second);
+    string first = "", second = "";
+    map<int, int> freqTable;
+    for (char ch: chars) {
+        if (ch == ':') {
+            beforeCol = !beforeCol;
+        } else if(ch == ',' || ch == '}') {
+            freqTable[stoi(first)] = stoi(second);
             first = "";
             second = "";
-            beforeCol = true;
-        } else if (ch == ':') {
-            beforeCol = false;
-        } else if (ch == ' ') {
+            beforeCol = !beforeCol;
 
+        }else if (beforeCol) {
+            if (ch == ' ' || ch == '{') {
+
+            } else {
+                first += ch;
+            }
         } else {
-            if (beforeCol) first += ch;
-            else second += ch;
+            second += ch;
         }
     }
-    HuffmanNode* ourTree = buildEncodingTree(aMap);
-    decodeData(input, ourTree, output);
-*/
+    HuffmanNode* tree = buildEncodingTree(freqTable);
+    decodeData(input, tree, output);
+    freeTree(tree);
 }
 
 void freeTree(HuffmanNode* node) {
-    // TODO: implement this function
+    if (node->isLeaf()) {
+        delete node;
+    } else {
+        if(node->zero != nullptr) {
+            freeTree(node->zero);
+        }
+        if(node->one != nullptr) {
+            freeTree(node->one);
+        }
+    }
 }
