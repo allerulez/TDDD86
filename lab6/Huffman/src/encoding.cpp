@@ -1,6 +1,6 @@
 #include "queue"
 #include "encoding.h"
-
+#include <bitset>
 
 using namespace std;
 
@@ -97,32 +97,49 @@ void decodeData(ibitstream& input, HuffmanNode* encodingTree, ostream& output) {
 
 void compress(istream& input, obitstream& output) {
     map<int, int> freqTable = buildFrequencyTable(input);
+    input.clear();
     HuffmanNode* tree = buildEncodingTree(freqTable);
     map<int, string> encMap = buildEncodingMap(tree);
     string mapString = "{";
-    for (pair<int, string> aPair: encMap) {
-        mapString += aPair.first;
-        mapString += ":" + aPair.second + ",";
+    for (pair<int, int> aPair: freqTable) {
+        for(char c: to_string(aPair.first)) mapString += c;
+        mapString += ':';
+        for(char c: to_string(aPair.second)) mapString += c;
+        mapString += ',';
+        mapString += ' ';
+        cout << aPair.first << ':' << aPair.second << ", " << endl;
     }
     mapString.pop_back();
-    cout << mapString << endl;
-    //            erase(mapString.end()-1, mapString.end());
-    mapString.append("}");
+    mapString.pop_back();
+    mapString += '}';
+
     for (char c: mapString) {
         output.put(c);
     }
-    encodeData(input, encMap, output);
 
+    input.seekg(0, input.beg);
+    encodeData(input, encMap, output);
 }
 
 void decompress(ibitstream& input, ostream& output) {
-    int c=0;
+    string chars = "";
+    bitset<8> bitVal;
+    do {
+        for (int i = 8; i>0; i--) {
+            bitVal[i] = input.readBit();
+        }
+        chars += char(bitVal.to_ulong());
+    }while ( chars.back() != '}');
+    cout << chars << endl;
+
+
+/*    int c=0;
     string charString = "";
      do {
         c = input.readBit();
         charString += c;
-    }
-    while(c!=int('}'));
+    }while(c!=int('}'));
+
 
     string first;
     string second;
@@ -139,16 +156,16 @@ void decompress(ibitstream& input, ostream& output) {
             beforeCol = true;
         } else if (ch == ':') {
             beforeCol = false;
-        } /*else if (ch == ' ') {
+        } else if (ch == ' ') {
 
-        }*/ else {
+        } else {
             if (beforeCol) first += ch;
             else second += ch;
         }
     }
     HuffmanNode* ourTree = buildEncodingTree(aMap);
     decodeData(input, ourTree, output);
-
+*/
 }
 
 void freeTree(HuffmanNode* node) {
