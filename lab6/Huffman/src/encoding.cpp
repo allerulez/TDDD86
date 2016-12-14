@@ -31,7 +31,7 @@ HuffmanNode* buildEncodingTree(const map<int, int> &freqTable) {
         }
         HuffmanNode* secondLeaf = prioQ.top();
         prioQ.pop();
-        HuffmanNode* node = new HuffmanNode(256, firstLeaf->count + secondLeaf->count, firstLeaf, secondLeaf);
+        HuffmanNode* node = new HuffmanNode(NOT_A_CHAR, firstLeaf->count + secondLeaf->count, firstLeaf, secondLeaf);
         prioQ.push(node);
     }
 }
@@ -158,14 +158,16 @@ void decompress(ibitstream& input, ostream& output) {
 }
 
 void freeTree(HuffmanNode* node) {
-    if (node->isLeaf()) {
-        delete node;
-    } else {
-        if(node->zero != nullptr) {
-            freeTree(node->zero);
-        }
-        if(node->one != nullptr) {
-            freeTree(node->one);
+    if(node != nullptr) {
+        if (node->isLeaf()) {
+            delete node;
+        } else {
+            if(node->zero != nullptr) {
+                freeTree(node->zero);
+            }
+            if(node->one != nullptr) {
+                freeTree(node->one);
+            }
         }
     }
 }
