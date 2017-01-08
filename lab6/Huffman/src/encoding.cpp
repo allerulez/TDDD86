@@ -168,6 +168,7 @@ void freeTree(HuffmanNode* node) {
             if(node->one != nullptr) {
                 freeTree(node->one);
             }
+            delete node;
         }
     }
 }

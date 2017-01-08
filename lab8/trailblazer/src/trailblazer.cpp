@@ -79,16 +79,13 @@ vector<Node *> dijkstrasAlgorithm(BasicGraph& graph, Vertex* start, Vertex* end)
         Vertex* ver = prioQ.dequeue();
         ver->setColor(GREEN);
         for(Edge* e: graph.getEdgeSet(ver)) {
-            if(!e->finish->visited) {
-                double cost = ver->cost + e->cost;
-                if (cost < e->finish->cost) {
-                    e->finish->cost = cost;
-                    e->finish->previous = ver;
-                    prioQ.changePriority(e->finish, cost);
-                }
-
-                e->finish->setColor(YELLOW);
+            double cost = ver->cost + e->cost;
+            if (cost < e->finish->cost) {
+                e->finish->cost = cost;
+                e->finish->previous = ver;
+                prioQ.changePriority(e->finish, cost);
             }
+        if(!e->finish->visited) e->finish->setColor(YELLOW);
         }
         ver->visited = true;
         if (end->visited) {
@@ -120,16 +117,14 @@ vector<Node *> aStar(BasicGraph& graph, Vertex* start, Vertex* end) {
         Vertex* ver = prioQ.dequeue();
         ver->setColor(GREEN);
         for(Edge* e: graph.getEdgeSet(ver)) {
-            if(!e->finish->visited) {
-                double cost = ver->cost + e->cost;
-                if (cost < e->finish->cost) {
-                    e->finish->cost = cost;
-                    e->finish->previous = ver;
-                    prioQ.changePriority(e->finish, cost + e->finish->heuristic(end));
-                }
-
-                e->finish->setColor(YELLOW);
+            double cost = ver->cost + e->cost;
+            if (cost < e->finish->cost) {
+                e->finish->cost = cost;
+                e->finish->previous = ver;
+                prioQ.changePriority(e->finish, cost + e->finish->heuristic(end));
             }
+
+            if(!e->finish->visited) e->finish->setColor(YELLOW);
         }
         ver->visited = true;
         if (end->visited) {

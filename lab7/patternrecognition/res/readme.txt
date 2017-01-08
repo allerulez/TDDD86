@@ -33,6 +33,6 @@ Brute: O(n^4)
 	n --> O(n^4)	
 	(ovan är inte worst case) 
 
-Sortering: O(n^2)
-	två nästlade loopar ger worst case:
-	n --> O(n^2)
+Sortering: O(n^3)
+	två nästlade loopar och insert sort i priority queue ger worst case:
+	n --> O(n^3)
